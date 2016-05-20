@@ -1,0 +1,47 @@
+= Conceitos Iniciais
+
+Antes de analisarmos a vulnerabilidade, irei abordar os conceitos básicos
+necessários para entender os problemas.
+
+== Hash (Checksum)
+
+Os algoritmos de soma hash são algoritmos que retornam dados em um *comprimento
+fixo* independente do tamanho da entrada, e tais dados são *quase* exclusivos
+para os dados de entrada. Os algoritmos mais conhecidos são: MD5, SHA-1 e SHA-2.
+
+Como os resultados retornados por tais algoritmos são apenas apenas uma soma dos
+dados de entrada não há como inferir os dados de entrada através do resultado.
+
+.Exemplos de Hashes
+[cols="<1,<2",frame="none",grid="rows",options="header"]
+|===
+|Mensagem|Hash
+|Oi|lxFc
+|Olá, como vai?|R+bU
+|Bem-vindo|IB84
+|===
+
+== Criptografia Simétrica
+
+Os algoritmos de criptografia simétrica utilizam apenas uma chave para
+criptografar um dado qualquer, que pode ser uma mensagem, um arquivo, um pacote
+de dados etc. Os algoritmos mais conhecidos são: DES, TripleDES, AES, RC4 e RC5.
+
+A principal vantagem de algoritmos de criptografia simétrica é que são muito
+rápidos, o que se traduz em baixa latência e pouco uso de CPU. Já a
+principal desvantagem é que por utilizar a mesma chave quanto para criptografar
+quanto para descriptografar, essa chave precisa ser compartilhada com o
+receptor.
+
+.Comunicação com Criptografia Simétrica
+image::aes-alg.png[scaledwidth="95%",alt="Diagrama de caso de uso"]
+
+== Criptografia Assimétrica
+
+Em breve...
+
+== Assinaturas
+
+Em breve...
+
+// vim: ts=4 sw=4 et

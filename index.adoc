@@ -1,0 +1,37 @@
+= Entendendo a vulnerabilidade de segurança do JWT
+Fabrício Godoy <skarllot@gmail.com>
+v0.1, 2016-05-20
+:doctype: article
+:data-uri:
+:icons:
+:source-highlighter: pygments
+:theme: flask
+:toc2:
+:toclevels: 2
+:imagesdir: images
+ifndef::ebook-format[:leveloffset: 1]
+
+// Translation
+:toc-title: Sumário
+:caution-caption: Cuidado
+:important-caption: Importante
+:note-caption: Nota
+:tip-caption: Dica
+:warning-caption: Aviso
+:appendix-caption: Apêndice
+:example-caption: Exemplo
+:figure-caption: Figura
+:table-caption: Tabela
+
+// External links
+:Auth0Blog: https://auth0.com/blog/2015/03/31/critical-vulnerabilities-in-json-web-token-libraries/[Critical vulnerabilities in JSON Web Token libraries]
+:JWT: https://tools.ietf.org/html/rfc7519[JWT]
+
+Em 2015 foram descobertas vulnerabilidades nas bibliotecas que implementam JSON
+Web Token ({JWT}) que permitiam que a etapa de verificação pudesse ser burlada.
+Nesse artigo vamos entender exatamente como uma chave pública podia ser
+utilizada como uma chave para criptografia simétrica.
+
+include::base-concepts.adoc[]
+
+// vim: ts=4 sw=4 et

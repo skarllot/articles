@@ -1,0 +1,36 @@
+@startuml
+
+title Signing with Asymmetric Encryption
+
+package JOHN {
+	actor John as john
+	(Hello) as (out)
+	(RSA) as (jrsa)
+	(Private Key) as (jpvtkey)
+	(Public Key) as (jpubkey)
+	(7Gv$wdaP0) as (encout)
+}
+package ROBIN {
+	actor Robin as robin
+	(Hello) as (in)
+	(RSA) as (rrsa)
+	(7Gv$wdaP0) as (encin)
+}
+(Internet) as (net)
+
+john -> (out)
+(out) -right-> (jrsa)
+(jpvtkey) -down-> (jrsa)
+(jrsa) -right-> (encout)
+(encout) -> (net)
+
+(net) -> (encin)
+(encin) -> (rrsa)
+(rrsa) -> (in)
+(in) -> robin
+
+note "Shareable Key" as N1
+(jpubkey) .down. N1
+N1 .down.> (rrsa)
+
+@enduml
