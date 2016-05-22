@@ -57,7 +57,7 @@ seguro para que a troca de chave ocorra.
 
 Algoritmos de criptografia assimétrica são muito custosos em termos de CPU, por
 esse motivo as comunicações, normalmente, os utilizam como meio de troca de
-chave simétrica. Diminuindo, assim o tempo e recursos de CPU.
+chave simétrica. Diminuindo, assim o tempo e recursos da CPU.
 
 .Envio de Dados com Criptografia Assimétrica
 image::crypt-asym-alg.png[scaledwidth="95%",alt="Diagrama conceitual"]
@@ -67,6 +67,27 @@ image::crypt-asym-alg2.png[scaledwidth="95%",alt="Diagrama conceitual"]
 
 == Assinaturas
 
-Em breve...
+Enquanto que em comunicações os algoritmos de criptografia assimétrica são
+utilizados para garantir privacidade, em assinaturas os mesmos são utilizados
+para garantir identidade.
+
+Quando Anderson quer enviar um dado sigiloso para Roberta, ele utiliza a chave
+pública de Roberta para garantir que apenas Roberta consiga descriptografar o
+dado enviado. Entretanto, quando Roberto quer confirmar que um dado foi gerado
+por ele, o mesmo pode utilizar a chave privada para criptografar o dado e assim
+qualquer com sua chave pública pode confirmar a identidade descriptografando o
+dado.
+
+Apesar de eficaz, criptografar todo o dado para garantir identidade não é muito
+usual. O problema é que dependendo da aplicação é um gasto de recursos
+desnecessário.
+
+Quando queremos apenas confirmar identidade o dado não é privado, pois a chave
+pública potencialmente está disponível a qualquer um, o que permite que os
+mesmos acessem os dados. Assim, uma maneira eficiente de alcançar o mesmo
+objetivo, com quase a mesma eficiência, é gerar uma soma Hash (Checksum) do dado
+e criptografar esse resultado. Então a confirmação de identidade passaria a ser
+da seguinte maneira: gerar uma soma Hash do dado recebido, descriptografar a
+assinatura recebida e por fim comparar se os resultados são iguais.
 
 // vim: ts=4 sw=4 et

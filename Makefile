@@ -12,16 +12,17 @@ DOT	:=	$(wildcard $(DIADIR)/*.dot)
 ADOC	:=	$(PKGNAME).adoc
 EPUB	:=	$(ADOC:%.adoc=$(DISTDIR)/%.epub)
 HTML	:=	$(ADOC:%.adoc=$(DISTDIR)/%.html)
+MOBI	:=	$(ADOC:%.adoc=$(DISTDIR)/%.mobi)
 PDFA4	:=	$(ADOC:%.adoc=$(DISTDIR)/%.pdf)
 PDFA5	:=	$(ADOC:%.adoc=$(DISTDIR)/%-a5.pdf)
 PNGUML	:=	$(UML:$(DIADIR)/%.uml=$(IMGDIR)/%.png)
 PNGDOT	:=	$(DOT:$(DIADIR)/%.dot=$(IMGDIR)/%.png)
 PATH	:=	$(HOME)/bin:$(PATH)
 
-.SUFFIXES: .adoc .dot .epub .html .pdf .png .uml
+.SUFFIXES: .adoc .dot .epub .html .mobi .pdf .png .uml
 .PHONY: all clean clean-dist clean-images
 
-all: $(PNGUML) $(PNGDOT) $(HTML) $(PDFA4) $(PDFA5) $(EPUB)
+all: $(PNGUML) $(PNGDOT) $(HTML) $(PDFA4) $(PDFA5) $(EPUB) $(MOBI)
 
 clean: clean-dist clean-images
 
@@ -52,11 +53,15 @@ $(DISTDIR)/%-a5.pdf: %.adoc
 
 $(DISTDIR)/%.epub: %.adoc
 	@echo "Converting $< to $@"
-	@asciidoctor-epub3 -D "$(DISTDIR)" "$<"
+	@asciidoctor-epub3 -D "$(DISTDIR)" -a ebook-validate "$<"
 
 $(DISTDIR)/%.html: %.adoc
 	@echo "Converting $< to $@"
 	@asciidoctor -D "$(DISTDIR)" "$<"
+
+$(DISTDIR)/%.mobi: %.adoc
+	@echo "Converting $< to $@"
+	@asciidoctor-epub3 -D "$(DISTDIR)" -a ebook-format=kf8 "$<"
 
 $(ADOC): $(ADOCINC) $(PNGUML) $(PNGDOT)
 #	@echo "File $< modified"
