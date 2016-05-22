@@ -1,0 +1,11 @@
+= Introdução
+
+// External links
+:Auth0Blog: https://auth0.com/blog/2015/03/31/critical-vulnerabilities-in-json-web-token-libraries/[Critical vulnerabilities in JSON Web Token libraries]
+:JWT: https://tools.ietf.org/html/rfc7519[JWT]
+
+Em 2015 foram descobertas vulnerabilidades nas bibliotecas que implementam JSON
+Web Token ({JWT}) que permitiam que a etapa de verificação pudesse ser burlada.
+Nesse artigo vamos entender exatamente como uma chave pública podia ser
+utilizada como uma chave para criptografia simétrica.
+

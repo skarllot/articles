@@ -1,0 +1,38 @@
+digraph G {
+    rankdir="LR";
+    resolution=300;
+
+    subgraph cluster_john {
+        node [style=filled];
+        node [shape=note];
+        msg[label="Oi"]; encmsg[label="XTgow0Cq+ac+"];
+        node [shape=box]; alg[label="Algoritmo"];
+
+        label="Anderson";
+        color=black;
+    }
+
+    subgraph cluster_robin {
+        node [style=filled];
+        node [shape=note];
+        msg2[label="Oi"]; encmsg2[label="XTgow0Cq+ac+"];
+        node [shape=box]; alg2[label="Algoritmo"];
+        subgraph cluster_keys {
+            node [shape=cds];
+            keypvt[label="Privada"];
+            keypub[label="Pública"];
+            keys [label="Chaves",shape=plaintext,style=solid];
+        }
+
+        label="Roberta";
+        color=black;
+    }
+
+    msg -> alg -> encmsg -> net -> encmsg2 -> alg2 -> msg2;
+    alg -> keypub[dir=back,style=dashed];
+    alg2 -> keypvt[dir=back]
+
+    net [shape=doubleoctagon,label="Internet"];
+}
+
+// vim: ts=4 sw=4 et

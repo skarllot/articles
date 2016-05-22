@@ -1,6 +1,6 @@
 = Conceitos Iniciais
 
-Antes de analisarmos a vulnerabilidade, irei abordar os conceitos básicos
+Antes de analisarmos a vulnerabilidade, irei revisar os conceitos básicos
 necessários para entender os problemas.
 
 == Hash (Checksum)
@@ -11,6 +11,8 @@ para os dados de entrada. Os algoritmos mais conhecidos são: MD5, SHA-1 e SHA-2
 
 Como os resultados retornados por tais algoritmos são apenas apenas uma soma dos
 dados de entrada não há como inferir os dados de entrada através do resultado.
+Esses resultados são muito úteis para verificação de integridade, pois se espera
+que qualquer alteração nos dados de entrada os resultados sejam diferentes.
 
 .Exemplos de Hashes
 [cols="<1,<2",frame="none",grid="rows",options="header"]
@@ -33,12 +35,35 @@ principal desvantagem é que por utilizar a mesma chave quanto para criptografar
 quanto para descriptografar, essa chave precisa ser compartilhada com o
 receptor.
 
-.Comunicação com Criptografia Simétrica
-image::aes-alg.png[scaledwidth="95%",alt="Diagrama de caso de uso"]
+.Envio de Dados com Criptografia Simétrica
+image::crypt-sym-alg.png[scaledwidth="95%",alt="Diagrama conceitual"]
+
+.Recebimento de Dados com Criptografia Simétrica
+image::crypt-sym-alg2.png[scaledwidth="95%",alt="Diagrama conceitual"]
+
 
 == Criptografia Assimétrica
 
-Em breve...
+Os algoritmos de criptografia assimétrica utilizam duas chaves complementares
+para criptografar e descriptografar. Uma das chaves é guardada em segredo e não
+é revelada ninguém e outra pode ser publicada a qualquer um livremente. Os
+algoritmos mais conhecidos são: RSA e ECDSA.
+
+Um grande diferencial dessa classe de algoritmos é que um dado criptografado com
+uma chave pode apenas ser descriptografado com outra e vice-versa. Essa
+característica permite que estranhos mantenham uma comunicação segura mesmo que
+o meio de comunicação não o seja, e além disso, não há a necessidade de um meio
+seguro para que a troca de chave ocorra.
+
+Algoritmos de criptografia assimétrica são muito custosos em termos de CPU, por
+esse motivo as comunicações, normalmente, os utilizam como meio de troca de
+chave simétrica. Diminuindo, assim o tempo e recursos de CPU.
+
+.Envio de Dados com Criptografia Assimétrica
+image::crypt-asym-alg.png[scaledwidth="95%",alt="Diagrama conceitual"]
+
+.Recebimento de Dados com Criptografia Assimétrica
+image::crypt-asym-alg2.png[scaledwidth="95%",alt="Diagrama conceitual"]
 
 == Assinaturas
 
