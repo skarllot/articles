@@ -2,12 +2,15 @@
 Fabrício Godoy <skarllot@gmail.com>
 v0.1, 2016-05-22
 :doctype: article
+:lang: pt-BR
+:revdate: 2016-05-22
+:author: Fabrício Godoy
 :producer: Fabrício Godoy
-:keywords: vulnerabilidade, segurança, seguranca, bug, jwt, criptografia
+:keywords: vulnerabilidade, segurança, seguranca, bug, jwt, criptografia, json
 :copyright: CC-BY-SA 3.0
 :data-uri:
-:icons:
-:source-highlighter: rouge
+:icons: font
+:source-highlighter: pygments
 :theme: flask
 :toc2:
 :toclevels: 2
@@ -29,5 +32,6 @@ ifndef::ebook-format[:leveloffset: 1]
 
 include::intro.adoc[]
 include::base-concepts.adoc[]
+include::analysis.adoc[]
 
 // vim: ts=4 sw=4 et

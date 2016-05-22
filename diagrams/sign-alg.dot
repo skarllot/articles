@@ -1,0 +1,36 @@
+digraph G {
+    rankdir="LR";
+    resolution=300;
+
+    subgraph cluster_john {
+        node [style=filled];
+        node [shape=note];
+        msg[label="Olá como vai?"];
+	    summsg[label="R+bU"];
+	    encsum[label="mks12I"];
+	    outmsg[label="Olá como vai?\n+ mks12I"];
+        node [shape=box];
+	    crypt[label="Criptografia"];
+	    hash[label="Soma Hash"];
+
+        //subgraph cluster_keys {
+            node [shape=cds];
+            keypvt[label="Chave\n  Privada  "];
+            keypub[label="Chave\n  Pública  "];
+            //keys [label="Chaves",shape=plaintext,style=solid];
+        //}
+
+        label="Anderson";
+        color=black;
+    }
+
+    hash -> summsg -> crypt -> encsum -> outmsg -> net;
+    msg -> hash;
+    outmsg -> msg[dir=back];
+    keypvt -> crypt[constraint=false];
+    keypub -> net[style=dashed];
+
+    net [shape=doubleoctagon,label="Internet"];
+}
+
+// vim: ts=4 sw=4 et

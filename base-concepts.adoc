@@ -1,3 +1,9 @@
+// External links
+:RFC: https://tools.ietf.org/html/rfc7519[RFC 7519]
+:JSON: http://www.json.org/[JSON]
+:Base64Url: https://en.wikipedia.org/wiki/Base64[Base64Url]
+:JwtIo: https://jwt.io/[jwt.io]
+
 = Conceitos Iniciais
 
 Antes de analisarmos a vulnerabilidade, irei revisar os conceitos básicos
@@ -67,9 +73,9 @@ image::crypt-asym-alg2.png[scaledwidth="95%",alt="Diagrama conceitual"]
 
 == Assinaturas
 
-Enquanto que em comunicações os algoritmos de criptografia assimétrica são
-utilizados para garantir privacidade, em assinaturas os mesmos são utilizados
-para garantir identidade.
+Há também outro uso muito comum para a criptografia assimétrica, além de ser
+utilizada para garantir privacidade, também é utilizada em assinaturas para
+garantir identidade.
 
 Quando Anderson quer enviar um dado sigiloso para Roberta, ele utiliza a chave
 pública de Roberta para garantir que apenas Roberta consiga descriptografar o
@@ -90,4 +96,148 @@ e criptografar esse resultado. Então a confirmação de identidade passaria a s
 da seguinte maneira: gerar uma soma Hash do dado recebido, descriptografar a
 assinatura recebida e por fim comparar se os resultados são iguais.
 
+.Assinatura de Dados com Criptografia Assimétrica
+image::sign-alg.png[scaledwidth="95%",alt="Diagrama conceitual"]
+
+Por fim existe a possibilidade combinar a garantia de identidade e a garantia de
+de privacidade ao mesmo tempo. Para tal basta realizar todo o processo de
+assinatura e, antes de enviar os dados, criptografar tudo utilizando a chave
+pública do destinatário.
+
+== JSON Web Token (JWT)
+
+O padrão JSON Web Token ({RFC}) define uma maneira segura, compacta e
+independente de transmitir informações usando como base objetos {JSON}. Essas
+informações são confiáveis pois são assinadas, conforme a técnica que abordamos
+na seção anterior.
+
+O padrão JWT permite as informações sejam assinadas tanto com criptografia
+simétrica (com o algoritmo HMAC) quanto com criptografia assimétrica (com os
+algoritmos RSA e ECDSA).
+
+JWTs são compactos de uma maneira que permite que os mesmos sejam transmitidos
+junto ao cabeçalho de uma requisição HTTP ou até na URL. Adicionalmente, JWTs
+são independentes pois os mesmos podem carregar toda informação necessária sem
+que seja necessário uma consulta no banco de dados.
+
+Os JWTs são muito utilizados no processo de autenticação permitindo que o
+processo de autorização de acesso a recursos seja mais rápido e escalável.
+Mais rápido porque por ser independente retira da equação o tempo de latência
+de acesso ao banco de dados ou outro mecanismo de cache. E mais escalável pois
+permite que serviços totalmente independentes compartilhem a mesma autenticação
+sem necessitar de comunicação entre os mesmos.
+
+=== Estrutura
+
+A estrutura de um JWT contém três partes separadas por pontos (`.`), que são: o
+cabeçalho, informação útil e a assinatura.
+
+==== Cabeçalho
+
+A implementação mais básica do cabeçalho contém dois campos: um que define o
+tipo de token e outro que define o algoritmo utilizado. O tipo de token sempre é
+`JWT` e o algoritmo é uma combinação de soma Hash com algoritmo de criptografia.
+
+.Exemplo de cabeçalho JWT (RSA + SHA-384)
+[source,json]
+----
+{
+    "alg": "RS384",
+    "typ": "JWT"
+}
+----
+
+Esse cabeçalho é codificado utilizando o algoritmo {Base64Url}, antes de compor
+um JWT.
+
+==== Informação Útil (Payload)
+
+Essa parte do JWT contém as afirmações (_claims_, em inglês). As afirmações são
+confirmações sobre uma entidade, normalmente um usuário, e alguns dados
+adicionais.
+
+Há um conjunto de afirmações pré-definidas pelo padrão que são reservadas, como
+`iss` (emissor), `exp` (data de expiração), `sub` (entidade), `aud`
+(destinatário) etc.
+
+.Exemplo de _payload_ JWT
+[source,json]
+----
+{
+    "iss": "accounts.google.com",
+    "sub": "110169484474386276334",
+    "aud": "1008719970978-hb24n2dstb40o45d4feuo2ukqmcc6381.apps.googleusercontent.com",
+    "iat": "1433978353",
+    "exp": "1433981953",
+    "email": "testuser@gmail.com"
+}
+----
+
+A _informação útil_ também é codificada utilizando o algoritmo {Base64Url}, antes
+de compor a segunda parte do JWT.
+
+==== Assinatura
+
+A assinatura é criada a partir das seguintes informações: cabeçalho codificado
+com Base64Url, a _informação útil_ codificada com Base64Url, uma chave para
+criptografia e um algoritmo de soma Hash e criptografia.
+
+.Exemplo do algoritmo de assinatura com RSA PKCS#1 e SHA-256
+[source,javascript]
+----
+// Algoritmo RS256
+var hash = sha256(
+    base64UrlEncode(header) + "." +
+    base64UrlEncode(payload));
+var signature = rsaPKCS1(hash, key);
+----
+
+Como as partes anteriores a assinatura também é codificada utilizando o
+algoritmo {Base64Url}, antes de compor o JWT.
+
+==== Conclusão
+
+O resultado final são três partes codificadas com `Base64Url` e separadas por
+pontos. Como demonstrado no exemplo logo abaixo.
+
+.Exemplo do resultado final de um JWT
+[source]
+----
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ
+----
+
+O resultado do exemplo acima foi calculado utilizando os seguintes dados:
+
+.Cabeçalho
+[source,json]
+----
+{
+    "alg": "HS256",
+    "typ": "JWT"
+}
+----
+
+.Informação Útil
+[source,json]
+----
+{
+    "sub": "1234567890",
+    "name": "John Doe",
+    "admin": true
+}
+----
+
+.Assinatura
+[source,javascript]
+----
+hmacSha256(
+    base64UrlEncode(header) + "." +
+    base64UrlEncode(payload),
+    "secret");
+----
+
+Você pode realizar testes e colocar esses conceitos em prática no site {JwtIo}.
+Lá você pode decodificar, verificar e gerar JWTs, tudo online no navegador.
+
 // vim: ts=4 sw=4 et
+
