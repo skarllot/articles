@@ -5,6 +5,7 @@ v0.1, 2016-05-22
 :lang: pt-BR
 :revdate: 2016-05-22
 :author: Fabrício Godoy
+:creator: Fabrício Godoy
 :producer: Fabrício Godoy
 :keywords: vulnerabilidade, segurança, seguranca, bug, jwt, criptografia, json
 :copyright: CC-BY-SA 3.0

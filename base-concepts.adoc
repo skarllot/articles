@@ -4,6 +4,7 @@
 :Base64Url: https://en.wikipedia.org/wiki/Base64[Base64Url]
 :JwtIo: https://jwt.io/[jwt.io]
 
+[[base-concepts]]
 = Conceitos Iniciais
 
 Antes de analisarmos a vulnerabilidade, irei revisar os conceitos básicos

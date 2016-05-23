@@ -1,8 +1,11 @@
-= Introducao
+[[intro]]
+= Introdução
 
 // External links
 :Auth0Blog: https://auth0.com/blog/2015/03/31/critical-vulnerabilities-in-json-web-token-libraries/[blog]
 :JWT: https://tools.ietf.org/html/rfc7519[JWT]
+
+[small]#9 min de leitura#
 
 Em março de 2015 Tim McLean publicou em um {Auth0Blog} que após analisar várias
 implementações do JSON Web Token ({JWT}) descobriu vulnerabilidades que
