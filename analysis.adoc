@@ -1,3 +1,77 @@
-= Analise das Vulnerabilidades
+[[analysis]]
+= Análise das Vulnerabilidades
 
-Em breve...
+Finalmente irei abordar as vulnerabilidades encontradas nas implementações do
+JSON Web Token.
+
+== Algoritmo Nulo
+
+Quando um _token_ precisa ser validado o primeiro passo é determinar o algoritmo
+utilizado pelo mesmo, como é indicado pelo campo `alg` do cabeçalho.
+
+Isso significa que entramos num dilema, o próprio _token_ indica qual algoritmo
+deve ser utilizado para validar a si próprio. E isso pode ser desastroso,
+dependendo da implementação.
+
+No padrão JWT há a opção de algoritmo identificado como `none` indicando um
+algoritmo nulo, o que significa que não foi utilizado nenhum algoritmo para
+gerar uma assinatura para o _token_.
+
+.Exemplo de cabeçalho JWT com algoritmo nulo
+[source,json]
+----
+{
+    "alg": "none",
+    "typ": "JWT"
+}
+----
+
+O problema é que algumas bibliotecas aceitam _tokens_ com algoritmo nulo como se
+tivessem uma assinatura válida. O que abre uma vulnerabilidade enorme,
+permitindo que qualquer atacante possa criar um _token_ válido.
+
+A maioria das implementações resolveram esse problema rejeitando algoritmos
+nulos quando uma chave de criptografia é passada como parâmetro.
+
+== Criptografia Simétrica vs Assimétrica
+
+Aceitar algoritmos nulos não é o real problema, o problema é aceitar que
+atacantes controlem o algoritmo de criptografia.
+
+Se a biblioteca aceita que um _token_ seja validado sem especificar o algoritmo
+esperado, outra vulnerabilidade grave é aberta. Exatamente no caso esperarmos
+que o _token_ use uma criptografia assimétrica e o atacante utiliza uma
+criptografia simétrica.
+
+.Lógica de validação de assinatura JWT
+image::jwt-alg.png[scaledwidth="95%",alt="Diagrama de Atividade"]
+
+O problema com essa lógica é que o atacante pode obter a chave pública e assinar
+um _token_ qualquer utilizando um algoritmo simétrico (HMAC) e indicar no
+cabeçalho o mesmo algoritmo. Assim utilizando o mesmo algoritmo e a mesma chave
+o token será considerado válido, pois a *assinatura gerada* será igual a
+*assinatura do token*.
+
+Lembrando que nesse caso como os tokens válidos estão sendo assinados com a
+chave privada os mesmos devem ser validados com a chave pública. Por isso o
+atacante terá sucesso, pois tem a certeza que o token está sendo validado com a
+chave pública.
+
+== Recomendações
+
+Desenvolvedores deveriam exigir que o algoritmo utilizado para validação seja
+passado como parâmetro. Assim garante-se que será utilizado o algoritmo
+apropriado para a chave fornecida.
+
+Caso seja necessária a utilização de mais de um algoritmo com chaves diferentes,
+a solução é atribuir um identificador para cada chave e indicá-la no campo `kid`
+do cabeçalho (_key identifier_, em inglês). Assim será possível inferir o
+algoritmo de acordo com a chave utilizada. Dessa maneira o campo `alg` não terá
+utilidade alguma além de, talvez, validar que ele indica o algoritmo esperado.
+
+Ao utilizar uma implementação do padrão JWT, você deve auditar de maneira
+consistente se ela rejeita efetivamente algoritmos além do esperado. Assim a
+possibilidade de sucesso em ataques dessa natureza estarão quase nulos.
+
+// vim: ts=4 sw=4 et
+

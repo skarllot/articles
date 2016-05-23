@@ -1,0 +1,21 @@
+@startuml
+
+skinparam dpi 150
+
+:Verificar(token, chave)<
+:partes := token.dividir(".")
+cabecalho := partes(0)
+payload := partes(1)
+assinatura := partes(2)]
+:Decodificar token;
+:Obter algoritmo do cabeçalho;
+:Executar soma Hash do cabeçalho e payload;
+:Criptografar o resultado da soma Hash;
+if (Assinatura gerada = Assinatura do token) then (sim)
+	:Assinatura válida>
+else (não)
+	:Assinatura inválida>
+endif
+
+' vim: ts=2 sw=2
+@enduml
