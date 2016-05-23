@@ -1,6 +1,6 @@
 = Entendendo a vulnerabilidade de segurança do JWT
 Fabrício Godoy <skarllot@gmail.com>
-v0.1, 2016-05-22
+v1.0, 2016-05-22
 :doctype: article
 :lang: pt-BR
 :revdate: 2016-05-22

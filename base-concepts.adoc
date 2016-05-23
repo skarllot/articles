@@ -12,9 +12,10 @@ necessários para entender os problemas.
 
 == Hash (Checksum)
 
-Os algoritmos de soma hash são algoritmos que retornam dados em um *comprimento
-fixo* independente do tamanho da entrada, e tais dados são *quase* exclusivos
-para os dados de entrada. Os algoritmos mais conhecidos são: MD5, SHA-1 e SHA-2.
+Os algoritmos de soma hash são algoritmos que retornam um resultado de
+*comprimento fixo* independente do tamanho da entrada, e esse resultado é
+*quase* exclusivo para os dados de entrada. Os algoritmos mais conhecidos são:
+MD5, SHA-1 e SHA-2.
 
 Como os resultados retornados por tais algoritmos são apenas apenas uma soma dos
 dados de entrada não há como inferir os dados de entrada através do resultado.
@@ -82,15 +83,15 @@ Quando Anderson quer enviar um dado sigiloso para Roberta, ele utiliza a chave
 pública de Roberta para garantir que apenas Roberta consiga descriptografar o
 dado enviado. Entretanto, quando Roberto quer confirmar que um dado foi gerado
 por ele, o mesmo pode utilizar a chave privada para criptografar o dado e assim
-qualquer com sua chave pública pode confirmar a identidade descriptografando o
-dado.
+qualquer um com sua chave pública pode confirmar a identidade descriptografando
+o dado.
 
 Apesar de eficaz, criptografar todo o dado para garantir identidade não é muito
 usual. O problema é que dependendo da aplicação é um gasto de recursos
 desnecessário.
 
 Quando queremos apenas confirmar identidade o dado não é privado, pois a chave
-pública potencialmente está disponível a qualquer um, o que permite que os
+pública está disponível a qualquer um, o que permite que os
 mesmos acessem os dados. Assim, uma maneira eficiente de alcançar o mesmo
 objetivo, com quase a mesma eficiência, é gerar uma soma Hash (Checksum) do dado
 e criptografar esse resultado. Então a confirmação de identidade passaria a ser
@@ -108,9 +109,9 @@ pública do destinatário.
 == JSON Web Token (JWT)
 
 O padrão JSON Web Token ({RFC}) define uma maneira segura, compacta e
-independente de transmitir informações usando como base objetos {JSON}. Essas
-informações são confiáveis pois são assinadas, conforme a técnica que abordamos
-na seção anterior.
+independente de transmitir informações usando como base objetos {JSON}. A
+confiabilidade das informações são asseguradas via assinaturas, conforme a
+técnica que abordamos na seção anterior.
 
 O padrão JWT permite as informações sejam assinadas tanto com criptografia
 simétrica (com o algoritmo HMAC) quanto com criptografia assimétrica (com os
@@ -193,8 +194,8 @@ var hash = sha256(
 var signature = rsaPKCS1(hash, key);
 ----
 
-Como as partes anteriores a assinatura também é codificada utilizando o
-algoritmo {Base64Url}, antes de compor o JWT.
+Da mesma maneira que nas partes anteriores a assinatura também é codificada
+utilizando o algoritmo {Base64Url}, antes de compor o JWT.
 
 ==== Conclusão
 
