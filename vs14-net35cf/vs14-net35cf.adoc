@@ -1,0 +1,38 @@
+= Ativando o .NET Compact Framework 3.5 no Visual Studio 2015
+Fabrício Godoy <skarllot@gmail.com>
+v1.0, 2017-01-25
+:doctype: article
+:lang: pt-BR
+:revdate: 2017-01-25
+:author: Fabrício Godoy
+:creator: Fabrício Godoy
+:producer: Fabrício Godoy
+:keywords: compact, net35-cf, workaround, windowsce, wince, pocket, pocketpc
+:copyright: CC-BY-SA 3.0
+:data-uri:
+:icons: font
+:source-highlighter: pygments
+:theme: flask
+:toc2:
+:toclevels: 2
+:imagesdir: images
+ifdef::ebook-format[:front-cover-image: image:cover.png[width=793,height=1122]]
+ifndef::ebook-format[:leveloffset: 1]
+
+// Translation
+:toc-title: Sumário
+:caution-caption: Cuidado
+:important-caption: Importante
+:note-caption: Nota
+:tip-caption: Dica
+:warning-caption: Aviso
+:appendix-caption: Apêndice
+:example-caption: Exemplo
+:figure-caption: Figura
+:table-caption: Tabela
+
+include::intro.adoc[]
+//include::base-concepts.adoc[]
+//include::analysis.adoc[]
+
+// vim: ts=4 sw=4 et

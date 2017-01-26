@@ -1,0 +1,31 @@
+[[intro]]
+= Introdução
+
+// External links
+:NETCF: http://msdn.microsoft.com/en-us/library/f44bbwa1.aspx[.NET Compact Framework]
+:IDE: https://pt.wikipedia.org/wiki/Ambiente_de_desenvolvimento_integrado[IDE]
+:Android: https://developer.xamarin.com/guides/android/[Android]
+:iOS: https://developer.xamarin.com/guides/ios/[iOS]
+
+[small]#? min de leitura#
+
+O Microsoft {NETCF} é a versão do .NET Framework projetada especialmente para
+dispositivos com recursos restritos e que rodam o Microsoft Windows CE,
+Pocket PC, Symbian v3 etc.
+
+O suporte a plataforma terminou em meados de 2011, e a última versão do
+Microsoft Visual Studio a suportá-la foi a 2008. Assim, esse {IDE} é necessário
+para que o desenvolvimento nessa plataforma seja possível.
+
+Caso um projeto exija compatibilidade com várias plataformas incluindo .NET
+Framework 4.6, {Android}, {iOS} e .NET Compact Framework 3.5. Dois {IDE} são
+necessários para garantir a cobertura em todas essas plataformas.
+
+O que esse artigo irá abordar a possibilidade, não suportada oficialmente, de
+utilizar apenas o Microsoft Visual Studio 2015 para o desenvolvimento de
+bibliotecas compatíveis em todas as plataformas citadas.
+
+É importante salientar que não será possível utilizar o Microsoft Visual Studio
+2015 para desenvolvimento do aplicativo final ou de testes para o .NET Compact
+Framework 3.5, pois o mesmo não contém as ferramentas necessárias para tal.
+
