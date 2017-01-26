@@ -1,0 +1,231 @@
+[[csharp6]]
+= Utilizando C# 6.0
+
+// External links
+:CS6: https://msdn.microsoft.com/pt-br/magazine/Dn879355.aspx[C# 6.0]
+:NetFull: https://www.visualstudio.com/downloads/#net-framework[.NET Framework]
+:Net35CFRedist: https://www.microsoft.com/en-us/download/details.aspx?id=65[.NET Compact Framework 3.5 Redistributable]
+:Net35CFPowerToys: https://www.microsoft.com/en-us/download/details.aspx?id=13442[Power Toys for .NET Compact Framework 3.5]
+:MSBuild14: https://www.visualstudio.com/downloads/#microsoft-build-tools-2015-update-3[Microsoft Build Tools 2015 Update 3]
+
+Primeiramente irei abordar como utilizar o compilador {CS6} com o .NET Compact
+Framework 3.5, sem o Microsoft Visual Studio 2015. As alterações abordadas por
+esse tópico são minímas e facilmente reproduzidas em ambientes com restrições.
+
+A razão da utilização do C# 6.0 é a possibilidade de se beneficiar dos últimos
+recursos da linguagem sem abrir mão da compatibilidade.
+
+== Premissas
+
+. Ter a última versão do _{NetFull}_ instalado.
+. Ter o pacote _{Net35CFRedist}_ instalado.
+. Ter o pacote _{Net35CFPowerToys}_ instalado.
+. Ter o pacote _{MSBuild14}_ instalado (caso o Visual Studio já não esteja
+instalado).
+
+== Procedimentos
+
+O arquivo `TARGETS` principal do .NET Compact Framework 3.5 define que outros
+arquivos `TARGETS` necessários estão localizados no mesmo diretório do
+compilador _Microsoft Build Tool_, o que não é verdade nas versões atuais.
+
+Para corrigir a compilação há duas maneiras distintas: modificando arquivos da
+instalação do pacote ou criando um arquivo local. A última é mais recomendada,
+pois não envolve alteração de arquivos que estão fora do próprio controle.
+
+=== Modificar o arquivo *TARGETS* original (Alternativa 1)
+
+. Abrir o arquivo `Microsoft.CompactFramework.CSharp.targets`, localizado no
+diretório `C:\Windows\Microsoft.NET\Framework\v3.5`.
+. Substituir todas as ocorrências de `$(MSBuildBinPath)` por
+`C:\Windows\Microsoft.NET\Framework\v3.5`.
+. Realizar o mesmo procedimento do passo anterior em todos os arquivos `CSPROJ`.
+
+=== Criar um arquivo *TARGETS* local (Alternativa 2)
+
+. Criar um novo arquivo `TARGETS` no diretório da solução, com o seguinte
+conteúdo:
+
+.Microsoft.CompactFramework.CSharp.targets
+[source,xml]
+----
+<!--
+***********************************************************************************************
+Microsoft.CompactFramework.CSharp.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <FrameworkRegistryBase>Software\Microsoft\.NETCompactFramework</FrameworkRegistryBase>
+        <AssemblyFoldersSuffix>$(PlatformFamilyName)\AssemblyFoldersEx</AssemblyFoldersSuffix>
+        <AssemblyFoldersExConditions>,OSVersion=$(OSVersion):Platform=$(PlatformID)</AssemblyFoldersExConditions>
+        <TargetCompactFramework>true</TargetCompactFramework>
+    </PropertyGroup>
+    <Import Project="C:\Windows\Microsoft.NET\Framework\v3.5\Microsoft.CSharp.Targets" />
+    <Import Project="C:\Windows\Microsoft.NET\Framework\v3.5\Microsoft.CompactFramework.Common.targets" />
+</Project>
+----
+
+[start=2]
+. Em todos arquivos `CSPROJ` existentes substituir todas as ocorrências de
+`$(MSBuildBinPath)\` por `$(SolutionDir)`.
+
+=== Compilar o projeto modificado
+
+Para o procedimento de compilação do projeto pode ser criado um arquivo comum
+que será utilizado por todos os outros projetos:
+
+.build-net35cf.cmd
+[source,batch]
+----
+REM ---------------------------------------------------------------------------
+REM This code is release under the MIT license.
+REM
+REM Copyright (c) 2016, Fabricio Godoy (https://fgodoy.me)
+REM All rights reserved.
+REM
+REM ---------------------------------------------------------------------------
+
+setlocal enabledelayedexpansion
+
+REM Capture parameters
+set SolutionDir=%~1	<1>
+set SolutionName=%~2	<2>
+set Project=%~3		<3>
+set Configuration=%~4	<4>
+
+set net35path="C:\Windows\Microsoft.NET\Framework\v3.5"
+set msbuild35="%net35path%\MSBuild.exe"
+set targetscf="%net35path%\Microsoft.CompactFramework.CSharp.targets"
+
+set msbuild="%ProgramFiles(x86)%\MSBuild\14.0\bin\msbuild"
+if not exist %msbuild% (
+    set msbuild="%ProgramFiles%\MSBuild\14.0\bin\msbuild"
+)
+if not exist %msbuild% (
+    echo Falling back to MSBuild 12.0
+    set msbuild="%ProgramFiles(x86)%\MSBuild\12.0\bin\msbuild"
+)
+if not exist %msbuild% (
+    set msbuild=%ProgramFiles%\MSBuild\12.0\bin\msbuild"
+)
+if not exist %msbuild% (
+    echo Falling back to .NET Framework 3.5 MSBuild
+    set msbuild=%msbuild35%
+)
+
+echo Compiling %Project% for .NETFramework,Version=v3.5,Profile=CompactFramework
+echo.
+
+REM ============================================================================
+REM Check tools availability
+REM ============================================================================
+if not exist %msbuild% (
+    echo Error trying to find MSBuild executable
+    EXIT /B 1
+)
+
+if not exist %targetscf% (
+    echo Error trying to find Compact Framework targets
+    echo.
+    echo Install '.NET Compact Framework Redistributable'
+    echo and 'Power Toys for .NET Compact Framework 3.5'
+    exit /B 1
+)
+
+REM ============================================================================
+REM Setup variables
+REM ============================================================================
+
+set WinCEDir=%SolutionDir%WindowsCE\	<5>
+set SolutionFile=%WinCEDir%\%SolutionName%.sln
+set TargetDir=net35-cf
+REM Normalize project name for MSBuild
+set Project=%Project:.=_%
+
+if "%Configuration%" == "" (
+    set Configuration=Release	<6>
+)
+
+if not exist %SolutionFile%(
+    set WinCEDir=%SolutionDir%
+    set SolutionFile=%WinCEDir%%SolutionName%.sln
+)
+if not exist %SolutionFile% (
+    echo Missing solution for Compact Framework target
+    exit /B 1
+)
+
+REM ============================================================================
+REM ============================================================================
+
+set OutputPath=%SolutionDir%Output\%TargetDir%	<7>
+set ObjOutputPath=%SolutionDir%Output\obj
+rmdir /s/q "%OutputPath%" 2> nul
+rmdir /s/q "%ObjOutputPath%" 2> nul
+
+REM Call MSBuild to build library
+%msbuild% %SolutionFile% /target:%Project% /verbosity:minimal /property:Configuration=%Configuration%;OutputPath=%OutputPath%\;BaseIntermediateOutputPath=%ObjOutputPath%\ > output_rel.log
+rmdir /s/q "%ObjOutputPath%"
+
+if %ERRORLEVEL% == 0 (
+    echo Compilation succeeded
+) else (
+    echo Compilation failed
+    type output_rel.log
+    EXIT /B 1
+)
+
+echo.
+echo.
+echo.
+
+set Configuration=
+set SolutionDir=
+set SolutionFile=
+set Project=
+
+EXIT /B %ERRORLEVEL%
+----
+<1> O primeiro parâmetro que define o caminho do diretório onde se localiza o
+arquivo da solução.
+<2> O segundo parâmetro que define o nome do arquivo da solução.
+<3> O terceiro parâmetro que define o nome do projeto para compilar.
+<4> O quarto parâmetro, opcional, que define qual configuração será utilizada
+na compilação.
+<5> Verifica se há um diretório exclusivo para a solução para _.NET Compact
+Framework_.
+<6> Define que a configuração `Release` deve ser utilizada na compilação quando
+nenhuma configuração é definida.
+<7> Define que saída do compilador deve estar no diretório `Output\net35-cf`,
+dentro do diretório da solução.
+
+Criado o arquivo descrito acima, cria-se um outro arquivo específico para a
+solução atual:
+
+.build.cmd
+[source,batch]
+----
+@echo off
+
+set SolutionDir=%~dp0
+set SolutionName=FooSolution
+set Project=BarProject
+
+REM Cleanup output directory
+rmdir /s/q "%SolutionDir%Output" 2> nul
+mkdir "%SolutionDir%Output"
+
+CALL %SolutionDir%tools\build-net35cf.cmd %SolutionDir% %SolutionName% %Project% || EXIT /B 1
+
+echo build complete.
+EXIT /B %ERRORLEVEL%
+----
+

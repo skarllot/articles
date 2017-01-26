@@ -1,4 +1,4 @@
-= Ativando o .NET Compact Framework 3.5 no Visual Studio 2015
+= Dando Sobrevida para o .NET Compact Framework 3.5
 Fabrício Godoy <skarllot@gmail.com>
 v1.0, 2017-01-25
 :doctype: article
@@ -32,7 +32,6 @@ ifndef::ebook-format[:leveloffset: 1]
 :table-caption: Tabela
 
 include::intro.adoc[]
-//include::base-concepts.adoc[]
-//include::analysis.adoc[]
+include::csharp6.adoc[]
 
 // vim: ts=4 sw=4 et

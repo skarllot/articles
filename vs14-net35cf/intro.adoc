@@ -22,7 +22,7 @@ Framework 4.6, {Android}, {iOS} e .NET Compact Framework 3.5. Dois {IDE} são
 necessários para garantir a cobertura em todas essas plataformas.
 
 O que esse artigo irá abordar a possibilidade, não suportada oficialmente, de
-utilizar apenas o Microsoft Visual Studio 2015 para o desenvolvimento de
+utilizar o Microsoft Visual Studio 2015 e o C# 6.0 para o desenvolvimento de
 bibliotecas compatíveis em todas as plataformas citadas.
 
 É importante salientar que não será possível utilizar o Microsoft Visual Studio
